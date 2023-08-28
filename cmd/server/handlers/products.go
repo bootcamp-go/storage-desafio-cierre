@@ -117,9 +117,9 @@ type ProductResponseTopSelled struct {
 	Quantity	int		`json:"quantity"`
 }
 type ResponseBodyTopSelledProducts struct {
-	Message string					 `json:"message"`
+	Message string					 	`json:"message"`
 	Data    []*ProductResponseTopSelled `json:"data"`
-	Error	bool					 `json:"error"`
+	Error	bool					 	`json:"error"`
 }
 func (ct *ControllerProduct) TopSelled() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
