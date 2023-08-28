@@ -10,6 +10,12 @@ type Product struct {
 	Price       float64
 }
 
+// ProductSells is a struct that represents a product sells
+type ProductSells struct {
+	Description string
+	Quantity	int
+}
+
 // StorageProduct is an interface that represents a product storage
 type StorageProduct interface {
 	// ReadAll returns all products
@@ -17,6 +23,9 @@ type StorageProduct interface {
 
 	// Create inserts a new product
 	Create(p *Product) (err error)
+
+	// TopFiveSelled returns the top selled products
+	TopSelled() (ps []*ProductSells, err error)
 }
 
 var (

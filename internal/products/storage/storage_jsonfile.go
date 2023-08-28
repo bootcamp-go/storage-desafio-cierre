@@ -49,3 +49,8 @@ func (s *StorageProductJSONFile) ReadAll() (ps []*Product, err error) {
 func (s *StorageProductJSONFile) Create(p *Product) (err error) {
 	return
 }
+
+// TopSelled returns the top selled products
+func (s *StorageProductJSONFile) TopSelled() (ps []*ProductSells, err error) {
+	return
+}

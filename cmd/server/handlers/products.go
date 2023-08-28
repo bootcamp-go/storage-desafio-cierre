@@ -110,3 +110,42 @@ func (ct *ControllerProduct) Create() http.HandlerFunc {
 		response.JSON(w, code, body)
 	}
 }
+
+// TopSelled returns a handler for getting the top selled products
+type ProductResponseTopSelled struct {
+	Description	string	`json:"description"`
+	Quantity	int		`json:"quantity"`
+}
+type ResponseBodyTopSelledProducts struct {
+	Message string					 `json:"message"`
+	Data    []*ProductResponseTopSelled `json:"data"`
+	Error	bool					 `json:"error"`
+}
+func (ct *ControllerProduct) TopSelled() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		// request
+		// ...
+
+		// process
+		ps, err := ct.st.TopSelled()
+		if err != nil {
+			code := http.StatusInternalServerError
+			body := &ResponseBodyTopSelledProducts{Message: "Internal server error", Data: nil, Error: true}
+
+			response.JSON(w, code, body)
+			return
+		}
+
+		// response
+		code := http.StatusOK
+		body := &ResponseBodyTopSelledProducts{Message: "Success", Data: make([]*ProductResponseTopSelled, 0), Error: false}
+		for _, p := range ps {
+			body.Data = append(body.Data, &ProductResponseTopSelled{
+				Description: p.Description,
+				Quantity: p.Quantity,
+			})
+		}
+
+		response.JSON(w, code, body)
+	}
+}

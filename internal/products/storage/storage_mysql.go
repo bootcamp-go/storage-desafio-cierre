@@ -10,16 +10,16 @@ func NewStorageProductMySQL(db *sql.DB) *StorageProductMySQL {
 	return &StorageProductMySQL{db}
 }
 
+// StorageProductMySQL is a struct that represents a product storage in MySQL for StorageProduct interface
+type StorageProductMySQL struct {
+	db *sql.DB
+}
+
 // ProductMySQL is a struct that represents a product in MySQL
 type ProductMySQL struct {
 	Id          sql.NullInt32
 	Description sql.NullString
 	Price       sql.NullFloat64
-}
-
-// StorageProductMySQL is a struct that represents a product storage in MySQL for StorageProduct interface
-type StorageProductMySQL struct {
-	db *sql.DB
 }
 
 // ReadAll returns all products
@@ -128,6 +128,60 @@ func (s *StorageProductMySQL) Create(p *Product) (err error) {
 
 	// update product id
 	p.Id = int(id)
+
+	return
+}
+
+// TopFiveSelled returns the top five selled products
+type ProductSellsMySQL struct {
+	Description sql.NullString
+	Quantity	sql.NullInt32
+}
+
+// TopSelled returns the top selled products
+func (s *StorageProductMySQL) TopSelled() (ps []*ProductSells, err error) {
+	// query
+	query := "SELECT p.description, SUM(i.quantity) AS quantity FROM products p INNER JOIN sales s ON p.id = s.product_id GROUP BY p.id ORDER BY quantity DESC LIMIT 5"
+
+	// prepare statement
+	var stmt *sql.Stmt
+	stmt, err = s.db.Prepare(query)
+	if err != nil {
+		err = fmt.Errorf("%w. %v", ErrStorageProductInternal, err)
+		return
+	}
+	defer stmt.Close()
+
+	// execute query
+	var rows *sql.Rows
+	rows, err = stmt.Query()
+	if err != nil {
+		err = fmt.Errorf("%w. %v", ErrStorageProductInternal, err)
+		return
+	}
+
+	// iterate rows
+	for rows.Next() {
+		// scan row
+		var psMySQL ProductSellsMySQL
+		err = rows.Scan(&psMySQL.Description, &psMySQL.Quantity)
+		if err != nil {
+			err = fmt.Errorf("%w. %v", ErrStorageProductInternal, err)
+			return
+		}
+
+		// serialization
+		p := new(ProductSells)
+		if psMySQL.Description.Valid {
+			p.Description = psMySQL.Description.String
+		}
+		if psMySQL.Quantity.Valid {
+			p.Quantity = int(psMySQL.Quantity.Int32)
+		}
+
+		// append to list
+		ps = append(ps, p)
+	}
 
 	return
 }
