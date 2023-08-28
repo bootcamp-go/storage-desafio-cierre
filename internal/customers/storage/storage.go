@@ -7,7 +7,12 @@ type Customer struct {
 	Id        int
 	FirstName string
 	LastName  string
-	Condition bool
+	Condition int
+}
+
+type CustomerConditionInfo struct {
+	Condition int
+	Total     int
 }
 
 // StorageCustomer is an interface that represents a customer storage
@@ -17,6 +22,9 @@ type StorageCustomer interface {
 
 	// Create inserts a new customer
 	Create(c *Customer) (err error)
+
+	// ConditionInfo returns the total of customers based on their condition
+	ConditionInfo() (cs []*CustomerConditionInfo, err error)
 }
 
 var (

@@ -118,3 +118,32 @@ func (ct *ControllerInvoice) Create() http.HandlerFunc {
 		response.JSON(w, code, body)
 	}
 }
+
+
+// UpdateTotals returns a handler for updating the totals of all invoices
+type ResponseBodyUpdateTotals struct {
+	Message string `json:"message"`
+	Data	any	   `json:"data"`
+	Error   bool   `json:"error"`
+}
+func (ct *ControllerInvoice) UpdateTotals() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		// request
+		// ...
+
+		// process
+		if err := ct.st.UpdateTotals(); err != nil {
+			code := http.StatusInternalServerError
+			body := &ResponseBodyUpdateTotals{Message: "Internal server error", Data: nil, Error: true}
+
+			response.JSON(w, code, body)
+			return
+		}
+
+		// response
+		code := http.StatusOK
+		body := &ResponseBodyUpdateTotals{Message: "Success", Data: nil, Error: false}
+
+		response.JSON(w, code, body)
+	}
+}

@@ -20,6 +20,9 @@ type StorageInvoice interface {
 
 	// Create inserts a new invoice
 	Create(i *Invoice) (err error)
+
+	// UpdateTotals updates the totals of all invoices
+	UpdateTotals() (err error)
 }
 
 var (

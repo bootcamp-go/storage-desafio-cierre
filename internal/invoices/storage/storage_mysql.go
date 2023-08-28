@@ -153,3 +153,25 @@ func (s *StorageInvoiceMySQL) Create(i *Invoice) (err error) {
 	return
 }
 
+// UpdateTotals updates the totals of all invoices
+func (s *StorageInvoiceMySQL) UpdateTotals() (err error) {
+	// query
+	query := "UPDATE invoices i SET i.total = (SELECT SUM(s.quantity * p.price) FROM sales s INNER JOIN products p ON s.product_id = p.id WHERE s.invoice_id = i.id)"
+
+	// prepare statement
+	var stmt *sql.Stmt
+	stmt, err = s.db.Prepare(query)
+	if err != nil {
+		err = fmt.Errorf("%w. %v", ErrStorageInvoiceInternal, err)
+		return
+	}
+
+	// execute query
+	_, err = stmt.Exec()
+	if err != nil {
+		err = fmt.Errorf("%w. %v", ErrStorageInvoiceInternal, err)
+		return
+	}
+
+	return
+}

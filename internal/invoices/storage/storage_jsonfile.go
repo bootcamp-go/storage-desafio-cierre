@@ -51,3 +51,8 @@ func (s *StorageInvoiceJSONFile) ReadAll() (is []*Invoice, err error) {
 func (s *StorageInvoiceJSONFile) Create(i *Invoice) (err error) {
 	return
 }
+
+// UpdateTotals updates the totals of all invoices
+func (s *StorageInvoiceJSONFile) UpdateTotals() (err error) {
+	return
+}

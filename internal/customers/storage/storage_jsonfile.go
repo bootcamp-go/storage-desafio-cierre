@@ -21,7 +21,7 @@ type CustomerJSONFile struct {
 	Id        int	 `json:"id"`
 	FirstName string `json:"first_name"`
 	LastName  string `json:"last_name"`
-	Condition bool   `json:"condition"`
+	Condition int    `json:"condition"`
 }
 
 // Read reads the file
@@ -51,4 +51,9 @@ func (s *StorageCustomerJSONFile) ReadAll() (cs []*Customer, err error) {
 // Create creates a new customer
 func (s *StorageCustomerJSONFile) Create(c *Customer) (err error) {
 	return nil
+}
+
+// ConditionInfo returns the total of customers based on their condition
+func (s *StorageCustomerJSONFile) ConditionInfo() (cs []*CustomerConditionInfo, err error) {
+	return nil, nil
 }

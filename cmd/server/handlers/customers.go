@@ -24,7 +24,7 @@ type CustomerResponseGetAll struct {
 	Id			int    `json:"id"`
 	FirstName	string `json:"first_name"`
 	LastName	string `json:"last_name"`
-	Condition	bool   `json:"condition"`
+	Condition	int    `json:"condition"`
 }
 type ResponseBodyGetAllCustomers struct {
 	Message string					  `json:"message"`
@@ -66,13 +66,13 @@ func (ct *ControllerCustomer) GetAll() http.HandlerFunc {
 type RequestBodyCreateCustomers struct {
 	FirstName	string `json:"first_name"`
 	LastName	string `json:"last_name"`
-	Condition	bool   `json:"condition"`
+	Condition	int    `json:"condition"`
 }
 type CustomerResponseCreate struct {
 	Id			int    `json:"id"`
 	FirstName	string `json:"first_name"`
 	LastName	string `json:"last_name"`
-	Condition	bool   `json:"condition"`
+	Condition	int    `json:"condition"`
 }
 type ResponseBodyCreateCustomers struct {
 	Message string					`json:"message"`
@@ -115,6 +115,45 @@ func (ct *ControllerCustomer) Create() http.HandlerFunc {
 			LastName: c.LastName,
 			Condition: c.Condition,
 		}, Error: false}
+
+		response.JSON(w, code, body)
+	}
+}
+
+// ConditionInfo returns a handler for getting the condition info
+type CustomerConditionInfoResponse struct {
+	Condition int `json:"condition"`
+	Total     int `json:"total"`
+}
+type ResponseBodyConditionInfo struct {
+	Message string						 	 `json:"message"`
+	Data    []*CustomerConditionInfoResponse `json:"data"`
+	Error	bool							 `json:"error"`
+}
+func (ct *ControllerCustomer) ConditionInfo() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		// request
+		// ...
+
+		// process
+		cs, err := ct.storage.ConditionInfo()
+		if err != nil {
+			code := http.StatusInternalServerError
+			body := &ResponseBodyConditionInfo{Message: "Internal server error", Data: nil, Error: true}
+
+			response.JSON(w, code, body)
+			return
+		}
+
+		// response
+		code := http.StatusOK
+		body := &ResponseBodyConditionInfo{Message: "Success", Data: make([]*CustomerConditionInfoResponse, 0), Error: false}
+		for _, c := range cs {
+			body.Data = append(body.Data, &CustomerConditionInfoResponse{
+				Condition: c.Condition,
+				Total: c.Total,
+			})
+		}
 
 		response.JSON(w, code, body)
 	}
