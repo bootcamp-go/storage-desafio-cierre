@@ -57,3 +57,8 @@ func (s *StorageCustomerJSONFile) Create(c *Customer) (err error) {
 func (s *StorageCustomerJSONFile) ConditionInfo() (cs []*CustomerConditionInfo, err error) {
 	return nil, nil
 }
+
+// TopActiveCustomers returns the top active customers who have spent the most money
+func (s *StorageCustomerJSONFile) TopActiveCustomers() (cs []*CustomerAmountSpent, err error) {
+	return nil, nil
+}

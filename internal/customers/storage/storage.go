@@ -10,9 +10,17 @@ type Customer struct {
 	Condition int
 }
 
+// CustomerConditionInfo is a struct that represents a customer condition info
 type CustomerConditionInfo struct {
 	Condition int
 	Total     int
+}
+
+// CustomerAmountSpent is a struct that represents a customer amount spent
+type CustomerAmountSpent struct {
+	FirstName string
+	LastName  string
+	Amount	  float64
 }
 
 // StorageCustomer is an interface that represents a customer storage
@@ -25,6 +33,9 @@ type StorageCustomer interface {
 
 	// ConditionInfo returns the total of customers based on their condition
 	ConditionInfo() (cs []*CustomerConditionInfo, err error)
+
+	// TopActiveCustomers returns the top active customers who have spent the most money
+	TopActiveCustomers() (cs []*CustomerAmountSpent, err error)
 }
 
 var (

@@ -193,3 +193,61 @@ func (s *StorageCustomerMySQL) ConditionInfo() (cs []*CustomerConditionInfo, err
 
 	return
 }
+
+// CustomerAmountSpentMySQL is a struct that represents a customer amount spent in MySQL
+type CustomerAmountSpentMySQL struct {
+	FirstName	sql.NullString
+	LastName	sql.NullString
+	Amount		sql.NullFloat64
+}
+
+// TopActiveCustomers returns the top active customers who have spent the most money
+func (s *StorageCustomerMySQL) TopActiveCustomers() (cs []*CustomerAmountSpent, err error) {
+	// query
+	query := "SELECT c.first_name, c.last_name, SUM(i.total) AS amount FROM customers c JOIN invoices i ON c.id = i.customer_id GROUP BY c.id ORDER BY amount DESC LIMIT 5"
+
+	// prepare statement
+	var stmt *sql.Stmt
+	stmt, err = s.db.Prepare(query)
+	if err != nil {
+		err = fmt.Errorf("%w. %v", ErrStorageCustomerInternal, err)
+		return
+	}
+	defer stmt.Close()
+
+	// execute query
+	var rows *sql.Rows
+	rows, err = stmt.Query()
+	if err != nil {
+		err = fmt.Errorf("%w. %v", ErrStorageCustomerInternal, err)
+		return
+	}
+
+	// iterate rows
+	for rows.Next() {
+		// scan row
+		var csMySQL CustomerAmountSpentMySQL
+		err = rows.Scan(&csMySQL.FirstName, &csMySQL.LastName, &csMySQL.Amount)
+		if err != nil {
+			err = fmt.Errorf("%w. %v", ErrStorageCustomerInternal, err)
+			return
+		}
+
+		// serialization
+		c := new(CustomerAmountSpent)
+		if csMySQL.FirstName.Valid {
+			c.FirstName = csMySQL.FirstName.String
+		}
+		if csMySQL.LastName.Valid {
+			c.LastName = csMySQL.LastName.String
+		}
+		if csMySQL.Amount.Valid {
+			c.Amount = csMySQL.Amount.Float64
+		}
+
+		// append customer amount spent
+		cs = append(cs, c)
+	}
+
+	return
+}

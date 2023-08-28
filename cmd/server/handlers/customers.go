@@ -158,3 +158,44 @@ func (ct *ControllerCustomer) ConditionInfo() http.HandlerFunc {
 		response.JSON(w, code, body)
 	}
 }
+
+// TopActiveCustomers returns a handler for getting the top active customers
+type CustomerAmountSpentResponse struct {
+	FirstName	string  `json:"first_name"`
+	LastName	string  `json:"last_name"`
+	Amount		float64 `json:"amount"`
+}
+type ResponseBodyTopActiveCustomers struct {
+	Message string					  	   `json:"message"`
+	Data    []*CustomerAmountSpentResponse `json:"data"`
+	Error	bool					  	   `json:"error"`
+}
+func (ct *ControllerCustomer) TopActiveCustomers() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		// request
+		// ...
+
+		// process
+		cs, err := ct.storage.TopActiveCustomers()
+		if err != nil {
+			code := http.StatusInternalServerError
+			body := &ResponseBodyTopActiveCustomers{Message: "Internal server error", Data: nil, Error: true}
+
+			response.JSON(w, code, body)
+			return
+		}
+
+		// response
+		code := http.StatusOK
+		body := &ResponseBodyTopActiveCustomers{Message: "Success", Data: make([]*CustomerAmountSpentResponse, 0), Error: false}
+		for _, c := range cs {
+			body.Data = append(body.Data, &CustomerAmountSpentResponse{
+				FirstName: c.FirstName,
+				LastName: c.LastName,
+				Amount: c.Amount,
+			})
+		}
+
+		response.JSON(w, code, body)
+	}
+}
