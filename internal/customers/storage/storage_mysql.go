@@ -149,7 +149,7 @@ type CustomerConditionInfoMySQL struct {
 // ConditionInfo returns the total of customers based on their condition
 func (s *StorageCustomerMySQL) ConditionInfo() (cs []*CustomerConditionInfo, err error) {
 	// query
-	query := "SELECT condition, COUNT(id) AS total FROM customers GROUP BY condition"
+	query := "SELECT `condition`, COUNT(id) AS total FROM customers GROUP BY `condition`"
 
 	// prepare statement
 	var stmt *sql.Stmt
