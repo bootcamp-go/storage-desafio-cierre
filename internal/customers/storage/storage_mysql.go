@@ -204,7 +204,7 @@ type CustomerAmountSpentMySQL struct {
 // TopActiveCustomers returns the top active customers who have spent the most money
 func (s *StorageCustomerMySQL) TopActiveCustomers() (cs []*CustomerAmountSpent, err error) {
 	// query
-	query := "SELECT c.first_name, c.last_name, SUM(i.total) AS amount FROM customers c JOIN invoices i ON c.id = i.customer_id GROUP BY c.id ORDER BY amount DESC LIMIT 5"
+	query := "SELECT c.first_name, c.last_name, ROUND(SUM(i.total), 2) AS amount FROM customers c JOIN invoices i ON c.id = i.customer_id GROUP BY c.id ORDER BY amount DESC LIMIT 5"
 
 	// prepare statement
 	var stmt *sql.Stmt
