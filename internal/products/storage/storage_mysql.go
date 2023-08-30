@@ -141,7 +141,7 @@ type ProductSellsMySQL struct {
 // TopSelled returns the top selled products
 func (s *StorageProductMySQL) TopSelled() (ps []*ProductSells, err error) {
 	// query
-	query := "SELECT p.description, SUM(i.quantity) AS quantity FROM products p INNER JOIN sales s ON p.id = s.product_id GROUP BY p.id ORDER BY quantity DESC LIMIT 5"
+	query := "SELECT p.description, SUM(s.quantity) AS quantity FROM products p INNER JOIN sales s ON p.id = s.product_id GROUP BY p.id ORDER BY quantity DESC LIMIT 5"
 
 	// prepare statement
 	var stmt *sql.Stmt
