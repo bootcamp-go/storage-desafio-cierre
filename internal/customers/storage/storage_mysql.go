@@ -26,7 +26,7 @@ type CustomerMySQL struct {
 // ReadAll returns all customers
 func (s *StorageCustomerMySQL) ReadAll() (cs []*Customer, err error) {
 	// query
-	query := "SELECT id, first_name, last_name, condition FROM customers"
+	query := "SELECT id, first_name, last_name, `condition` FROM customers"
 	
 	// prepare statement
 	var stmt *sql.Stmt
@@ -95,7 +95,7 @@ func (s *StorageCustomerMySQL) Create(c *Customer) (err error) {
 	}
 
 	// query
-	query := "INSERT INTO customers (first_name, last_name, condition) VALUES (?, ?, ?)"
+	query := "INSERT INTO customers (first_name, last_name, `condition`) VALUES (?, ?, ?)"
 
 	// prepare statement
 	var stmt *sql.Stmt

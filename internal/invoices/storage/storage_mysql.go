@@ -28,7 +28,7 @@ type StorageInvoiceMySQL struct {
 // ReadAll returns all invoices
 func (s *StorageInvoiceMySQL) ReadAll() (is []*Invoice, err error) {
 	// query
-	query := "SELECT id, datetime, total, customer_id FROM invoices"
+	query := "SELECT id, `datetime`, total, customer_id FROM invoices"
 
 	// prepare statement
 	var stmt *sql.Stmt
@@ -97,7 +97,7 @@ func (s *StorageInvoiceMySQL) Create(i *Invoice) (err error) {
 	}
 
 	// query
-	query := "INSERT INTO invoices (datetime, total, customer_id) VALUES (?, ?, ?)"
+	query := "INSERT INTO invoices (`datetime`, total, customer_id) VALUES (?, ?, ?)"
 
 	// prepare statement
 	var stmt *sql.Stmt

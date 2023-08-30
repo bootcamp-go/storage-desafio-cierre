@@ -25,7 +25,7 @@ type ProductMySQL struct {
 // ReadAll returns all products
 func (s *StorageProductMySQL) ReadAll() (ps []*Product, err error) {
 	// query
-	query := "SELECT id, description, price FROM products"
+	query := "SELECT id, `description`, price FROM products"
 
 	// prepare statement
 	var stmt *sql.Stmt
@@ -87,7 +87,7 @@ func (s *StorageProductMySQL) Create(p *Product) (err error) {
 	}
 
 	// query
-	query := "INSERT INTO products (description, price) VALUES (?, ?)"
+	query := "INSERT INTO products (`description`, price) VALUES (?, ?)"
 
 	// prepare statement
 	var stmt *sql.Stmt
