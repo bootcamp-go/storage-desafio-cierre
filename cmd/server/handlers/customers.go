@@ -120,10 +120,10 @@ func (ct *ControllerCustomer) Create() http.HandlerFunc {
 	}
 }
 
-// ConditionInfo returns a handler for getting the condition info
+// ConditionInfo returns a handler to get the total amount of invoices per customer condition
 type CustomerConditionInfoResponse struct {
-	Condition int `json:"condition"`
-	Total     int `json:"total"`
+	Condition int	  `json:"condition"`
+	Total     float64 `json:"total"`
 }
 type ResponseBodyConditionInfo struct {
 	Message string						 	 `json:"message"`

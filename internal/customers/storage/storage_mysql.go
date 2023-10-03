@@ -143,13 +143,13 @@ func (s *StorageCustomerMySQL) Create(c *Customer) (err error) {
 // CustomerConditionInfoMySQL is a struct that represents a customer condition info in MySQL
 type CustomerConditionInfoMySQL struct {
 	Condition	sql.NullInt32
-	Total		sql.NullInt32
+	Total		sql.NullFloat64
 }
 
-// ConditionInfo returns the total of customers based on their condition
+// ConditionInfo returns the total amount of invoices per customer condition
 func (s *StorageCustomerMySQL) ConditionInfo() (cs []*CustomerConditionInfo, err error) {
 	// query
-	query := "SELECT `condition`, COUNT(id) AS total FROM customers GROUP BY `condition`"
+	query := "SELECT c.condition, ROUND(SUM(i.total),2) as total FROM customers as c INNER JOIN invoices as i ON c.id = i.customer_id GROUP BY c.condition"
 
 	// prepare statement
 	var stmt *sql.Stmt
@@ -184,7 +184,7 @@ func (s *StorageCustomerMySQL) ConditionInfo() (cs []*CustomerConditionInfo, err
 			c.Condition = int(csMySQL.Condition.Int32)
 		}
 		if csMySQL.Total.Valid {
-			c.Total = int(csMySQL.Total.Int32)
+			c.Total = csMySQL.Total.Float64
 		}
 
 		// append customer condition info

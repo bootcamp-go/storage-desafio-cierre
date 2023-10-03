@@ -10,10 +10,10 @@ type Customer struct {
 	Condition int
 }
 
-// CustomerConditionInfo is a struct that represents a customer condition info
+// CustomerConditionInfo is a struct that represents total amount of invoices per customer condition
 type CustomerConditionInfo struct {
 	Condition int
-	Total     int
+	Total     float64
 }
 
 // CustomerAmountSpent is a struct that represents a customer amount spent
